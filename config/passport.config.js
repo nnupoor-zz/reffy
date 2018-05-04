@@ -78,7 +78,7 @@ module.exports = (passport) => {
     usernameField : 'email',
     passwordField : 'password',
     passReqToCallback : true // allows us to pass back the entire request to the callback
-  }, (req, email, password, done) => { 
+    }, (req, email, password, done) => { 
     User.findOne({'local.email': email}, (err, user) => {
       // if there are any errors, return the error before anything else
       if (err) {

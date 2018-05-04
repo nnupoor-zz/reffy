@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>Node Authentication</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body        { padding-top:80px; word-wrap:break-word; }
     </style>
@@ -26,15 +26,109 @@
                     <p>
                         <strong>id</strong>: <%= user._id %><br>
                         <strong>email</strong>: <%= user.local.email %><br>
-                        <strong>password</strong>: <%= user.local.password %><br>
+                        <!-- <strong>password</strong>: <%= user.local.password %><br> -->
                         <strong>url</strong>: <%= user.website %>
                     </p>
 
             </div>
         </div>
+        <div class="col-sm-12">
+            <div class="form">
+                <form>
+                  <input type="email" data-ref-email="true" placeholder="Enter Email"/>
+                  <input type="email" placeholder="Confirm Email" />
+                  <input type="button" data-ref-submit="true" value="Submit">
+                </form>
+              </div>
+        </div>
+        <div id="response" class="well col-sm-12">
 
+        </div>
     </div>
+    </div>
+    <script type="text/javascript">
+    (function(){
+      var API_KEY = "5adf49bdf5f2348ce604eabd";
+      var email = document.querySelector('[data-ref-email=true]');
+      var submit = document.querySelector('[data-ref-submit=true]');
+      var queryParams = window.location.href.split('?')[1];
+      var referee = null;
+      var params = [];
+      if (queryParams && queryParams.indexOf('referral') !== -1) {
+        params = queryParams.split('&').map((kv) => {
+          var pair = kv.split('=');
+          var obj = {};
+          obj[pair[0]] = pair[1];
+          if (pair[0] === 'referral') {
+            referee = pair[1];
+          }
+          return obj
+        });
+      }
+      console.log(submit, email);
+      submit.onclick = function(e){
+        e.preventDefault();
+        createModal();
+        // sendReferral();
+      };
+      function sendReferral() {
+        var url = '/notes';
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(res) {
+          console.log(res);
+            if (this.readyState == 4 && this.status == 200) {
+              // Typical action to be performed when the document is ready:
+              document.getElementById("response").innerHTML = xhttp.responseText;
+            }
+        };
+        
+        xhttp.open("POST", url, true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        var data = {
+          key: API_KEY,
+          email: email && email.value,
+          referredBy: referee
+        };
+        xhttp.send(JSON.stringify(data));
+      }
 
-</div>
+      function createModal() {
+        var css = ".modal{display:none;/*Hiddenbydefault*/position:fixed;/*Stayinplace*/z-index:1;/*Sitontop*/padding-top:100px;/*Locationofthebox*/left:0;top:0;width:100%;/*Fullwidth*/height:100%;/*Fullheight*/overflow:auto;/*Enablescrollifneeded*/background-color:rgb(0,0,0);/*Fallbackcolor*/background-color:rgba(0,0,0,0.4);/*Blackw/opacity*/}/*ModalContent*/.modal-content{background-color:#fefefe;margin:auto;padding:20px;border:1pxsolid#888;width:80%;}/*TheCloseButton*/.close{color:#aaaaaa;float:right;font-size:28px;font-weight:bold;}.close:hover,.close:focus{color:#000;text-decoration:none;cursor:pointer;}";
+        var modalHTML = '<div id="refModal" class="modal"><div class="modal-content">'+
+            '<div class="referral-txt" id="main-content"></div>' +
+            '<div class="referral-btn text-right" id="main-actions">'+
+            '<button class="btn btn-secondary" id="closeModal">Close</button>'+
+            '<button class="btn btn-primary" id="copyReferralCode">Copy</button></div>' +
+            '</div></div>';
+        var div = document.createElement('div');
+        div.innerHTML = modalHTML;
+        document.body.appendChild(div);
+        insertCss(css);
+        var modalTextWrapper = document.getElementById('main-content');
+        modalTextWrapper.innerHTML = "<h2> This is your referral code. Go copy. </h2>";
+        var modal = document.getElementById('refModal');
+        var closeBtn = document.getElementById('closeModal');
+        modal.style.display = "block";
+        closeBtn.onclick = function() {
+          modal.style.display = "none";
+        }
+      }
+
+      function insertCss( code ) {
+        var style = document.createElement('style');
+        style.type = 'text/css';
+
+        if (style.styleSheet) {
+            // IE
+            style.styleSheet.cssText = code;
+        } else {
+            // Other browsers
+            style.innerHTML = code;
+        }
+
+        document.getElementsByTagName("head")[0].appendChild( style );
+    }
+    })();
+    </script>
 </body>
 </html>

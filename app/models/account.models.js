@@ -5,6 +5,8 @@ const AccountSchema = mongoose.Schema({
 	local: {
     email: String,
     password: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   facebook: {
     id: String,
