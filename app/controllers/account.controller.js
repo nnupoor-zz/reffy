@@ -54,7 +54,6 @@ exports.signup = (req, res) => {
 }
 
 exports.profile = (req, res) => {
-  console.log('---- next ---');
   res.render(path.join(__dirname, '../views/profile.view.ejs'), {
     user : req.user // get the user out of session and pass to template
   });

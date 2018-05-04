@@ -68,8 +68,8 @@
       console.log(submit, email);
       submit.onclick = function(e){
         e.preventDefault();
-        createModal();
-        // sendReferral();
+        // createModal();
+        sendReferral();
       };
       function sendReferral() {
         var url = '/notes';
@@ -105,12 +105,16 @@
         document.body.appendChild(div);
         insertCss(css);
         var modalTextWrapper = document.getElementById('main-content');
-        modalTextWrapper.innerHTML = "<h2> This is your referral code. Go copy. </h2>";
+        modalTextWrapper.innerHTML = "<h2> This is your referral code. Go copy. <input type='text' id='referralUrl' value='test.com/lalalala'/></h2>";
         var modal = document.getElementById('refModal');
         var closeBtn = document.getElementById('closeModal');
+        var copyBtn = document.getElementById('copyReferralCode');
         modal.style.display = "block";
         closeBtn.onclick = function() {
           modal.style.display = "none";
+        }
+        copyBtn.onclick = function() {
+          copyText();
         }
       }
 
@@ -127,7 +131,17 @@
         }
 
         document.getElementsByTagName("head")[0].appendChild( style );
-    }
+      }
+
+      function copyText() {
+        var copyText = document.getElementById("referralUrl");
+        /* Select the text field */
+        copyText.select();
+
+        /* Copy the text inside the text field */
+        document.execCommand("Copy");
+        console.log(copyText.value);
+      }
     })();
     </script>
 </body>

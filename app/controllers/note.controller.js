@@ -1,6 +1,8 @@
 const Note = require('../models/note.models.js');
 const accController = require('./account.controller.js');
 const _ID = "5ac853250e3ad813c3e8d1ef";
+const nodemailer = require('nodemailer');
+var sgTransport = require('nodemailer-sendgrid-transport');
 
 exports.create = (req, res) => {
   console.log('reqBody: ',req.body, 'reqHeaders: ',req.headers, req.get('origin'));
@@ -28,13 +30,77 @@ exports.create = (req, res) => {
                 const refcode = `${accData.website}/?referral=${data._id}`; 
                 data.refcode = refcode;
                 res.send(data);
+                return data;
               })
+              .then((data) => {
+                const sendConfirmationMail = (user) => {
+                  return new Promise((resolve, reject) => {
+                    const options = {
+                      auth: {
+                        api_user: 'nupoor.neha@gmail.com',
+                        api_key: 'AppleBanana123#',
+                      }
+                    };
+                    const client = nodemailer.createTransport(sgTransport(options));
+                    const refcode = `${accData.website}/?referral=${data._id}`;
+                    var mailOptions = {
+                      to: req.body.email,
+                      from: 'referalGenerator@demo.com',
+                      subject: 'Your referral code is generated',
+                      text: 'Hello,\n\n' +
+                        'Below is your referral code.\n' +
+                        refcode
+                    };
+              
+                    client.sendMail(mailOptions, function(err) {
+                      // req.flash('success', 'Success! Your password has been changed.');
+                      if (err) {
+                        err.type = "SENDGRID";
+                        reject(err);
+                      } else {
+                        resolve();
+                      }
+                    }); 
+                  });
+                };
+                sendConfirmationMail(user)
+              }) 
               .catch((err) => {
                 res.status(500).send({message: "Some error occurred while creating the account."});
               });
           } else {
             const refcode = `${accData.website}/?referral=${user._id}`; 
             res.send({message:'User already has referral code', code: refcode});
+            const sendConfirmationMail = (user) => {
+              return new Promise((resolve, reject) => {
+                const options = {
+                  auth: {
+                    api_user: 'nupoor.neha@gmail.com',
+                    api_key: 'AppleBanana123#',
+                  }
+                };
+                const client = nodemailer.createTransport(sgTransport(options));
+                var mailOptions = {
+                  to: req.body.email,
+                  from: 'referalGenerator@demo.com',
+                  subject: 'You asked for your referral code.',
+                  text: 'Hello,\n\n' +
+                    'Below is your already generated referral code.\n' +
+                    refcode
+                };
+          
+                client.sendMail(mailOptions, function(err) {
+                  // req.flash('success', 'Success! Your password has been changed.');
+                  if (err) {
+                    err.type = "SENDGRID";
+                    reject(err);
+                  } else {
+                    resolve();
+                  }
+                }); 
+              });
+            };
+            sendConfirmationMail(user)
           }
       })
       .catch((err) => {
