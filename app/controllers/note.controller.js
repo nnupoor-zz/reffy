@@ -34,7 +34,7 @@ exports.create = (req, res) => {
                   // referreer,
                   // createdAt,
                 }
-                res.send(data);
+                res.send(resObj);
                 return data;
               })
               .then((data) => {
