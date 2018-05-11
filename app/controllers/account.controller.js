@@ -113,7 +113,6 @@ exports.forgotPwd = (req, res, next) => {
         'If you did not request this, please ignore this email and your password will remain unchanged.\n'
     };
     client.sendMail(mailOptions, function(err) {
-      req.flash('info', 'An e-mail has been sent to ' + user.local.email + ' with further instructions.');
       if (err) {
         err.type = "SENDGRID";
         reject(err);
@@ -127,6 +126,9 @@ exports.forgotPwd = (req, res, next) => {
     return resetPwdToken(token).then((user) => {
       return nodeMailerFn(token, user).then(() => {
         console.log('done');
+        const msg =  'An e-mail has been sent to ' + user.local.email + ' with further instructions.';
+        res.render(path.join(__dirname, '../views/forgot.view.ejs'), { message: req.flash('info',msg) });
+        // req.flash('info', 'An e-mail has been sent to ' + user.local.email + ' with further instructions.');
       });
     });
   }).catch(err => {

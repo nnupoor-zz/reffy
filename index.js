@@ -23,9 +23,7 @@ mongoose.connection.once('open', ()=>{
 });
 
 app.authenticate = (req, res, next) => {
-  console.log('___________',req.user,'___________');
   if(req.user){
-    console.log('------next 1-----')
     next();
   }else{
     res.redirect('/login');  

@@ -46,9 +46,15 @@
         </div>
     </div>
     </div>
+    <% if (user) { %>
+      <!-- <h2>I have a game state!</h2> -->
+      <script>
+         var API_KEY = <%- JSON.stringify(user._id) %> ;          
+      </script>
+    <% } %>
     <script type="text/javascript">
     (function(){
-      var API_KEY = "5adf49bdf5f2348ce604eabd";
+      // var API_KEY = "5adf49bdf5f2348ce604eabd";
       var email = document.querySelector('[data-ref-email=true]');
       var submit = document.querySelector('[data-ref-submit=true]');
       var queryParams = window.location.href.split('?')[1];
@@ -79,6 +85,11 @@
             if (this.readyState == 4 && this.status == 200) {
               // Typical action to be performed when the document is ready:
               document.getElementById("response").innerHTML = xhttp.responseText;
+              var data = JSON.parse(xhttp.responseText);
+              var referralCode = data['refcode'];
+              var msg = data['msg'];
+              debugger;
+              createModal(msg, referralCode);
             }
         };
         
@@ -92,8 +103,8 @@
         xhttp.send(JSON.stringify(data));
       }
 
-      function createModal() {
-        var css = ".modal{display:none;/*Hiddenbydefault*/position:fixed;/*Stayinplace*/z-index:1;/*Sitontop*/padding-top:100px;/*Locationofthebox*/left:0;top:0;width:100%;/*Fullwidth*/height:100%;/*Fullheight*/overflow:auto;/*Enablescrollifneeded*/background-color:rgb(0,0,0);/*Fallbackcolor*/background-color:rgba(0,0,0,0.4);/*Blackw/opacity*/}/*ModalContent*/.modal-content{background-color:#fefefe;margin:auto;padding:20px;border:1pxsolid#888;width:80%;}/*TheCloseButton*/.close{color:#aaaaaa;float:right;font-size:28px;font-weight:bold;}.close:hover,.close:focus{color:#000;text-decoration:none;cursor:pointer;}";
+      function createModal(msg, refCode) {
+        var css = ".modal{display:none;/*Hiddenbydefault*/position:fixed;/*Stayinplace*/z-index:1;/*Sitontop*/padding-top:100px;/*Locationofthebox*/left:0;top:0;width:100%;/*Fullwidth*/height:100%;/*Fullheight*/overflow:auto;/*Enablescrollifneeded*/background-color:rgb(0,0,0);/*Fallbackcolor*/background-color:rgba(0,0,0,0.4);/*Blackw/opacity*/}/*ModalContent*/.modal-content{background-color:#fefefe;margin:auto;padding:20px;border:1pxsolid#888;width:80%;}/*TheCloseButton*/.close{color:#aaaaaa;float:right;font-size:28px;font-weight:bold;}.close:hover,.close:focus{color:#000;text-decoration:none;cursor:pointer;}button{margin: 8px;}";
         var modalHTML = '<div id="refModal" class="modal"><div class="modal-content">'+
             '<div class="referral-txt" id="main-content"></div>' +
             '<div class="referral-btn text-right" id="main-actions">'+
@@ -105,7 +116,7 @@
         document.body.appendChild(div);
         insertCss(css);
         var modalTextWrapper = document.getElementById('main-content');
-        modalTextWrapper.innerHTML = "<h2> This is your referral code. Go copy. <input type='text' id='referralUrl' value='test.com/lalalala'/></h2>";
+        modalTextWrapper.innerHTML = "<h2> "+msg+ " <input type='text' id='referralUrl' value='"+refCode+"' /></h2>";
         var modal = document.getElementById('refModal');
         var closeBtn = document.getElementById('closeModal');
         var copyBtn = document.getElementById('copyReferralCode');

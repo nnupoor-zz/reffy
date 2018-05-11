@@ -20,12 +20,12 @@ module.exports = (app, passport) => {
 
   app.get('/profile', app.authenticate,  account.profile);
   
-  app.get('/logout', app.authenticate,  account.logout);  
+  app.get('/logout',  account.logout);  
   // reset pwd
   // passport
-  app.get('/forgot', app.authenticate,  account.forgot);
-  app.post('/forgot', app.authenticate,  account.forgotPwd);
+  app.get('/forgot',  account.forgot);
+  app.post('/forgot',  account.forgotPwd);
 
-  app.get('/reset/:token', app.authenticate,  account.reset);
-  app.post('/reset/:token', app.authenticate, account.resetPwd);
+  app.get('/reset/:token',  account.reset);
+  app.post('/reset/:token', account.resetPwd);
 }
