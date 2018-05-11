@@ -13,7 +13,10 @@
     <div class="page-header text-center">
         <h1><span class="fa fa-anchor"></span> Forgot Password</h1>
     </div>
-    
+    <% if(info) { %>
+        <div class="alert alert-info"><%= info %></div>
+    <% } %>
+
     <div class="row">
         <div class="col-sm-5">
             <!-- LOCAL INFORMATION -->

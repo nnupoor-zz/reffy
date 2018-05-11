@@ -65,7 +65,7 @@ exports.logout = (req, res) => {
 }
 
 exports.forgot = (req, res) => {
-  res.render(path.join(__dirname, '../views/forgot.view.ejs'), { user: req.user});
+  res.render(path.join(__dirname, '../views/forgot.view.ejs'), { info: null, user: req.user});
 }
 
 exports.forgotPwd = (req, res, next) => {
@@ -127,8 +127,7 @@ exports.forgotPwd = (req, res, next) => {
       return nodeMailerFn(token, user).then(() => {
         console.log('done');
         const msg =  'An e-mail has been sent to ' + user.local.email + ' with further instructions.';
-        res.render(path.join(__dirname, '../views/forgot.view.ejs'), { message: req.flash('info',msg) });
-        // req.flash('info', 'An e-mail has been sent to ' + user.local.email + ' with further instructions.');
+        res.render(path.join(__dirname, '../views/forgot.view.ejs'), { info: msg });
       });
     });
   }).catch(err => {
