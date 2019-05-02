@@ -48,7 +48,7 @@ const forgotPwdMail = (data) => {
     const options = {
       auth: {
         api_user: 'nupoor.neha@gmail.com',
-        api_key: 'AppleBanana123#',
+        api_key: 'A*********a123#',
       }
     };
     const client = nodemailer.createTransport(sgTransport(options));
